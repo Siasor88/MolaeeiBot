@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -9,30 +10,27 @@ namespace ConsoleBot
 {
     public static class Handlers
     {
-        public static Task UpdateHandler(ITelegramBotClient botClient,Update update,CancellationToken cancellationToken)
-        {
-            Console.WriteLine("Meow");
-            if (update.Type == UpdateType.Message)
-            {
-                var message = update.Message;
-                Console.WriteLine(message.MessageId);
-            }
-            return Task.CompletedTask;
-        }
-
-        public static Task ErrorHandler(ITelegramBotClient botClient, Exception exception,
-            CancellationToken cancellationToken)
-        {
-            Console.WriteLine(exception.Message);
-            return Task.CompletedTask;
-        }
-
-        public static async Task ReplyMessageHandler(ITelegramBotClient botClient,string content,int chatId,int messageId,CancellationToken cancellationToken)
+        
+     
+        public static async Task ReplyMessageHandler(ITelegramBotClient botClient,string content,long chatId,int messageId,CancellationToken cancellationToken)
         {
             await botClient.SendTextMessageAsync(chatId: chatId, 
                 text: content,
                 replyToMessageId: messageId,
                 cancellationToken: cancellationToken);
         }
+
+        public static bool IsAnimation(Message message)
+        {
+            return message.Animation != null;
+        }
+        
+        /*
+         * file uniqId:
+         * fileId:
+         * message:
+         * 
+         * 
+         */
     }
 }

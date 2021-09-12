@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
+using System.Threading.Tasks;
+using Nest;
 using Telegram.Bot;
 using Telegram.Bot.Extensions.Polling;
+using Telegram.Bot.Types;
 
 namespace ConsoleBot
 {
@@ -9,14 +14,10 @@ namespace ConsoleBot
     {
         static void Main(string[] args)
         {
-            var botClient = new TelegramBotClient("1952790138:AAGTO8escIrN2im50ydJCF6dDVZ29PzSQTg");
-            var cts = new CancellationTokenSource();
-            botClient.StartReceiving(new DefaultUpdateHandler(Handlers.UpdateHandler,Handlers.ErrorHandler),cts.Token);
-            while (true)
-            {
-                // Console.ReadLine();
-            }
-
+            var uri = new Uri("http://localhost:9200");
+            ElasticClient a = null;
         }
+        
+
     }
 }
