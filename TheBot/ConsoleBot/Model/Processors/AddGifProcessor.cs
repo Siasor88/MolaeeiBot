@@ -25,6 +25,8 @@ namespace ConsoleBot.Model.Processors
                 string text = obj.Text;
                 _text = text;
                 BotController.SendTextMessage(obj.From.Id, "merci mashti gif add shod");
+                User user = BotController.UserDatabase.GetUserById(obj.From.Id);
+                user.MessageProcessor = new CommandProcessor();
                 throw new NotImplementedException("bayad bere to elastic");
             }
         }

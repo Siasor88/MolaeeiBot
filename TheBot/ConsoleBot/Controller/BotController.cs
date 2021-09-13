@@ -22,7 +22,16 @@ namespace ConsoleBot
                 User user = new User(message.From.Id);
                 UserDatabase.AddNewUserIfDoesNotExist(user);
                 user = UserDatabase.GetUserById(user.UserId);
-                user.MessageProcessor.Process(message);
+                Console.WriteLine(user.MessageProcessor.GetType());
+                try
+                {
+                    user.MessageProcessor.Process(message);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
+                
             }
             else if (update.Type == UpdateType.InlineQuery)
             {
