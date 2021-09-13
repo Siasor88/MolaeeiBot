@@ -10,10 +10,15 @@ namespace ConsoleBot.Model.Processors
             long userId = obj.From.Id;
             if (text == "/addgif")
             {
-                User user = BotController.UserDatabase.GetUserById(userId);
-                user.MessageProcessor = new AddGifProcessor();
-                BotController.SendTextMessage(user.UserId , AddGifProcessor.EntranceMessage);
+                AddGifCommand(userId);
             }
+        }
+
+        private static void AddGifCommand(long userId)
+        {
+            User user = BotController.UserDatabase.GetUserById(userId);
+            user.MessageProcessor = new AddGifProcessor();
+            BotController.SendTextMessage(user.UserId, AddGifProcessor.EntranceMessage);
         }
     }
 }

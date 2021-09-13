@@ -6,30 +6,43 @@ namespace ConsoleBot.Model.Processors
     public class AddGifProcessor : MessageProcessor
     {
         public static readonly string EntranceMessage = "please send a gif";
+        public static readonly string GifAddedMessage = "merci mashti gif add shod";
+        public static readonly string SendGifRequestMessage = "hala esm gif befrest";
+        public static readonly string YouShouldSendGifErrorMessage = "haji gif befrest in chie?? :||";
         private Gif _gif;
-        private string _text;
+
         public override void Process(Message obj)
         {
             if (_gif == null)
             {
-                if (obj.Animation == null)
-                {
-                    BotController.SendTextMessage(obj.From.Id, "haji gif befrest in chie?? :||");
-                    return;
-                }
-                
-                _gif = new Gif(obj.Animation.FileUniqueId , obj.Animation.FileId , obj.From.Id);
-                BotController.SendTextMessage(obj.From.Id, "hala esm gif befrest");
+                UpdateGif(obj);
             }
             else
             {
-                string text = obj.Text;
-                _text = text;
-                BotController.SendTextMessage(obj.From.Id, "merci mashti gif add shod");
-                User user = BotController.UserDatabase.GetUserById(obj.From.Id);
-                user.MessageProcessor = new CommandProcessor();
-                throw new NotImplementedException("bayad bere to elastic");
+                HandleGifData(obj);
             }
+        }
+
+        private void UpdateGif(Message obj)
+        {
+            if (obj.Animation == null)
+            {
+                BotController.SendTextMessage(obj.From.Id, YouShouldSendGifErrorMessage);
+                return;
+            }
+
+            _gif = new Gif(obj.Animation.FileUniqueId, obj.Animation.FileId, obj.From.Id);
+            BotController.SendTextMessage(obj.From.Id, SendGifRequestMessage);
+        }
+
+        private void HandleGifData(Message obj)
+        {
+            string text = obj.Text;
+            _gif.Data = text;
+            BotController.SendTextMessage(obj.From.Id, GifAddedMessage);
+            User user = BotController.UserDatabase.GetUserById(obj.From.Id);
+            user.MessageProcessor = new CommandProcessor();
+            BotController.GifController.Add(_gif);
         }
     }
 }

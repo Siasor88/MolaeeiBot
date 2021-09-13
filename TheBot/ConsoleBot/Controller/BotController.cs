@@ -22,38 +22,43 @@ namespace ConsoleBot
         {
             if (update.Type == UpdateType.Message)
             {
-                Message message = update.Message;
-                User user = new User(message.From.Id);
-                UserDatabase.AddNewUserIfDoesNotExist(user);
-                user = UserDatabase.GetUserById(user.UserId);
-                Console.WriteLine(user.MessageProcessor.GetType());
-                try
-                {
-                    user.MessageProcessor.Process(message);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine(e);
-                }
+                HandleMessages(update);
             }
             else if (update.Type == UpdateType.InlineQuery)
             {
-                string text = update.InlineQuery.Query;
-                Console.WriteLine(text);
-                List<InlineQueryResultBase> inlineQueryResultBases = new();
-                // https://media.giphy.com/media/duzpaTbCUy9Vu/giphy.gif
-                // CgACAgQAAxkBAAIBFGE_Q8HMVXAJDeVxCDPubl5nEFRHAALKAgACUc1NUNzbx5H8oMDVIAQ
-                InlineQueryResultGif inlineQueryResultGif = new InlineQueryResultGif("",
-                    "CgACAgQAAxkBAAIBFGE_Q8HMVXAJDeVxCDPubl5nEFRHAALKAgACUc1NUNzbx5H8oMDVIAQ", "");
-                inlineQueryResultBases.Add(inlineQueryResultGif);
-                AnswerInlineQuery(update.InlineQuery.Id, inlineQueryResultBases);
-                // foreach (var gif in GifController.Search(text))
-                // {
-                //     InlineQueryResultGif inlineQueryResultGif = new InlineQueryResultGif("blahblah" , gif.FileId , "dunno");
-                //     inlineQueryResultBases.Add(inlineQueryResultGif);
-                // }
-                // AnswerInlineQueryAsync("blahblah", inlineQueryResultBases);
+                HandleInlineQueries(update);
             }
+        }
+
+        private static void HandleMessages(Update update)
+        {
+            Message message = update.Message;
+            User user = new User(message.From.Id);
+            UserDatabase.AddNewUserIfDoesNotExist(user);
+            user = UserDatabase.GetUserById(user.UserId);
+            Console.WriteLine(user.MessageProcessor.GetType());
+            try
+            {
+                user.MessageProcessor.Process(message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+        }
+
+        private static void HandleInlineQueries(Update update)
+        {
+            string text = update.InlineQuery.Query;
+            List<InlineQueryResultBase> inlineQueryResultBases = new();
+            foreach (var gif in GifController.Search(text))
+            {
+                InlineQueryResultCachedGif inlineQueryResultGif =
+                    new InlineQueryResultCachedGif(Guid.NewGuid().ToString(), gif.FileId);
+                inlineQueryResultBases.Add(inlineQueryResultGif);
+            }
+
+            AnswerInlineQuery(update.InlineQuery.Id, inlineQueryResultBases);
         }
 
         public static async Task ErrorHandler(ITelegramBotClient botClient, Exception exception,
