@@ -6,14 +6,14 @@ namespace ConsoleBot
     [ElasticsearchType(IdProperty = nameof(UniqueId))]
     public class Gif
     {
-        public Gif(string uniqueId, string fileId, string ownerId)
+        public Gif(string uniqueId, string fileId, long ownerId)
         {
             UniqueId = uniqueId;
             FileId = fileId;
             OwnerId = ownerId;
         }
 
-        public string OwnerId { get; }
+        public long OwnerId { get; }
         public string UniqueId { get; }
         public string FileId { get; }
 

@@ -1,34 +1,31 @@
 using System.Collections.Generic;
+using ConsoleBot.Model.Processors;
 
 namespace ConsoleBot.Model
 {
-    public class UserDatabase : IDatabase<User>
+    public class UserDatabase : IUserDatabase
     {
-        private Dictionary<string/*userId*/, User> _onlineUsers = new();
-        
-        public void AddDocument(User doc)
+        private Dictionary<long/*userId*/, User> _onlineUsers = new();
+
+        public void AddNewUser(User user)
         {
-            throw new System.NotImplementedException();
+            _onlineUsers[user.UserId] = user;
         }
 
-        public void RemoveDocument(User doc)
+        public User GetUserById(long id)
         {
-            throw new System.NotImplementedException();
+            return _onlineUsers[id];
         }
 
-        public void Create()
+        public bool DoesUserExist(long id)
         {
-            throw new System.NotImplementedException();
+            return _onlineUsers.ContainsKey(id);
         }
 
-        public IEnumerable<User> GetAllData()
+        public void AddNewUserIfDoesNotExist(User user)
         {
-            throw new System.NotImplementedException();
-        }
-
-        public IEnumerable<User> MatchAll(string[] data)
-        {
-            throw new System.NotImplementedException();
+            if(!DoesUserExist(user.UserId))
+                AddNewUser(user);
         }
     }
 }

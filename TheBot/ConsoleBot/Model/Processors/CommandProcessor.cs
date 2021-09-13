@@ -6,7 +6,14 @@ namespace ConsoleBot.Model.Processors
     {
         public override void Process(Message obj)
         {
-            throw new System.NotImplementedException();
+            string text = obj.Text;
+            long userId = obj.From.Id;
+            if (text == "/addgif")
+            {
+                User user = BotController.UserDatabase.GetUserById(userId);
+                user.MessageProcessor = new AddGifProcessor();
+                BotController.SendTextMessage(user.UserId , AddGifProcessor.EntranceMessage);
+            }
         }
     }
 }

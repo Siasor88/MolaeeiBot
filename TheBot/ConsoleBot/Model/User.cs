@@ -6,11 +6,12 @@ namespace ConsoleBot
 {
     public class User
     {
-        public User(string userId)
+        public User(long userId)
         {
             UserId = userId;
+            MessageProcessor = new CommandProcessor();
         }
-        public string UserId { get; }
+        public long UserId { get; }
         public long LastCommandTime { get; set; }
         public MessageProcessor MessageProcessor { get; set; }
     }
