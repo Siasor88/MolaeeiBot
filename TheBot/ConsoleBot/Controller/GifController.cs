@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ConsoleBot
 {
@@ -14,22 +15,44 @@ namespace ConsoleBot
 
         public void Add(Gif gif)
         {
-            
+            _database.AddDocument(gif);
         }
 
         public void Remove(Gif gif)
         {
-            
-        }
-
-        public void Modify(Gif gif)
-        {
-            
+         _database.RemoveDocument(gif);   
         }
         
-        public IEnumerable<Gif> Search(string data, int lenght = 10)
+        public void Modify(Gif gif)
         {
-            throw new NotImplementedException();
+            _database.Update(gif);
+        }
+        
+        public IEnumerable<Gif> Search(string data)
+        {
+            string[] parsedData = ParseData(data);
+            return _database.MatchAll(parsedData);
+        }
+
+        public string[] ParseData(string data)
+        {
+            var parsedData = data.Trim().Split(" ").Where(s => s != "").ToList();
+            var result = CreateNewListFromTheExistingListWithAppendingNeighbors(parsedData);
+            return result.ToArray();
+        }
+
+        private static List<string> CreateNewListFromTheExistingListWithAppendingNeighbors(List<string> parsedData)
+        {
+            List<string> result = new();
+            for (int i = 0; i < parsedData.Count; i++)
+            {
+                result.Add(parsedData[i]);
+                if (i != parsedData.Count)
+                {
+                    result.Add(parsedData[i] + parsedData[i + 1]);
+                }
+            }
+            return result;
         }
     }
     
