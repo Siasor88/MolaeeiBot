@@ -8,8 +8,9 @@ namespace ConsoleBot
     {
         public void AddDocument(T doc);
         public void RemoveDocument(T doc);
-        public void Create();
-        public IEnumerable<T> GetAllData();
+        public void ConfigureDefaultSetting();
         public IEnumerable<T> MatchAll(string[] data);
+
+        public T Get(string id);
     }
 }

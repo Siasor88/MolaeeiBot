@@ -38,7 +38,7 @@ namespace ConsoleBot
             DefaultUpdateHandler defaultUpdateHandler =
                 new DefaultUpdateHandler(BotController.UpdateHandler, BotController.ErrorHandler);
             client.StartReceiving(defaultUpdateHandler, cts.Token);
-            ManageCommands(client);
+            // ManageCommands(client);
         }
 
         private static void ManageCommands(TelegramBotClient client)
