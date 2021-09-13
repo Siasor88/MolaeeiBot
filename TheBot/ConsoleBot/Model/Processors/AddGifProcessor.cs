@@ -17,6 +17,7 @@ namespace ConsoleBot.Model.Processors
                     BotController.SendTextMessage(obj.From.Id, "haji gif befrest in chie?? :||");
                     return;
                 }
+                
                 _gif = new Gif(obj.Animation.FileUniqueId , obj.Animation.FileId , obj.From.Id);
                 BotController.SendTextMessage(obj.From.Id, "hala esm gif befrest");
             }

@@ -15,6 +15,7 @@ namespace ConsoleBot
         
         static async Task Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             await InitBot();
             Wait();
         }
@@ -38,7 +39,8 @@ namespace ConsoleBot
             DefaultUpdateHandler defaultUpdateHandler =
                 new DefaultUpdateHandler(BotController.UpdateHandler, BotController.ErrorHandler);
             client.StartReceiving(defaultUpdateHandler, cts.Token);
-            // ManageCommands(client);
+
+            ManageCommands(client);
         }
 
         private static void ManageCommands(TelegramBotClient client)
