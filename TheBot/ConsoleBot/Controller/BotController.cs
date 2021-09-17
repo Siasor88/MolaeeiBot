@@ -16,6 +16,7 @@ namespace ConsoleBot
         public static IUserDatabase UserDatabase { get; set; } = new UserDatabase();
         public static GifController GifController { get; set; }
         public static TelegramBotClient Client { get; set; }
+        
 
         public static async Task UpdateHandler(ITelegramBotClient botClient, Update update,
             CancellationToken cancellationToken)
@@ -67,10 +68,12 @@ namespace ConsoleBot
             Console.WriteLine(exception);
         }
 
-        public static async Task SendTextMessage(long chatId, string text)
+        public static async Task SendTextMessage(long chatId, string text, int replyMessageId = default)
         {
-            await Client.SendTextMessageAsync(chatId, text);
+            await Client.SendTextMessageAsync(chatId, text,replyToMessageId: replyMessageId);
         }
+        
+
 
         public static async Task AnswerInlineQuery(string inlineQueryId,
             List<InlineQueryResultBase> inlineQueryResultBases)

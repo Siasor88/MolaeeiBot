@@ -19,11 +19,25 @@ namespace ConsoleBot
         {
             if (DoesGifExists(doc))
             {
-                var currentGifOnDatabase = Get(doc.UniqueId);
-                doc.Data = doc.Data + " " + currentGifOnDatabase?.Data;
+                Update(doc);
             }
+            else
+            {
+                IndexGif(doc);
+            }
+        }
 
+        private void IndexGif(Gif doc)
+        {
             _client.Index(doc, idx => idx.Index(_indexName));
+        }
+
+        public void Update(Gif doc)
+        {
+            var currentGifOnDatabase = Get(doc.UniqueId);
+            doc.Data = doc.Data + " " + currentGifOnDatabase?.Data;
+            IndexGif(doc);
+            
         }
 
         private bool DoesGifExists(Gif gif)

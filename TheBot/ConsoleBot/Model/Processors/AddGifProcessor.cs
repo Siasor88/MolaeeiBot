@@ -1,21 +1,24 @@
-using System;
+
 using Telegram.Bot.Types;
+using Telegram.Bot.Types.Enums;
+using static ConsoleBot.BotController;
 
 namespace ConsoleBot.Model.Processors
 {
     public class AddGifProcessor : MessageProcessor
     {
         public static readonly string EntranceMessage = "please send a gif";
-        public static readonly string GifAddedMessage = "merci mashti gif add shod";
+        public static readonly string GifAddedMessage = "merc mashti gif add shod";
         public static readonly string SendGifRequestMessage = "hala esm gif befrest";
         public static readonly string YouShouldSendGifErrorMessage = "haji gif befrest in chie?? :||";
-        private Gif _gif;
+        public static readonly string YouShouldSendTextErrorMessage = "haji ein adam ye matn befrest; in chie?? :||";
+        private Gif _queuedGif = null;
 
         public override void Process(Message obj)
         {
-            if (_gif == null)
+            if (IsThereAnyGif())
             {
-                UpdateGif(obj);
+                AddGifToQueue(obj);
             }
             else
             {
@@ -23,26 +26,52 @@ namespace ConsoleBot.Model.Processors
             }
         }
 
-        private void UpdateGif(Message obj)
+        private bool IsThereAnyGif()
         {
-            if (obj.Animation == null)
-            {
-                BotController.SendTextMessage(obj.From.Id, YouShouldSendGifErrorMessage);
-                return;
-            }
-
-            _gif = new Gif(obj.Animation.FileUniqueId, obj.Animation.FileId, obj.From.Id);
-            BotController.SendTextMessage(obj.From.Id, SendGifRequestMessage);
+            return _queuedGif == null;
         }
 
-        private void HandleGifData(Message obj)
+        private void AddGifToQueue(Message message)
         {
-            string text = obj.Text;
-            _gif.Data = text;
-            BotController.SendTextMessage(obj.From.Id, GifAddedMessage);
-            User user = BotController.UserDatabase.GetUserById(obj.From.Id);
+            if (message.Animation == null)
+            {
+                Respond(message,YouShouldSendGifErrorMessage);
+                return;
+            }
+            _queuedGif = new Gif(message.Animation.FileUniqueId, message.Animation.FileId, message.From.Id);
+            Respond(message,SendGifRequestMessage);
+        }
+
+        private void HandleGifData(Message message)
+        {
+            if (message.Type == MessageType.Text)
+            {
+                AddGifToDatabase(message);
+                Respond(message,GifAddedMessage);
+                ChangeUsersProcessor(message);
+            }
+            else
+            {
+                Respond(message,YouShouldSendTextErrorMessage);
+            }
+        }
+
+        private static void ChangeUsersProcessor(Message message)
+        {
+            User user = BotController.UserDatabase.GetUserById(message.From.Id);
             user.MessageProcessor = new CommandProcessor();
-            BotController.GifController.Add(_gif);
+        }
+
+        private void AddGifToDatabase(Message message)
+        {
+            string text = message.Text;
+            _queuedGif.Data = text;
+            BotController.GifController.Add(_queuedGif);
+        }
+
+        private static async void Respond(Message message,string text)
+        {
+            await SendTextMessage(chatId: message.From.Id, text: text,replyMessageId: message.MessageId);
         }
     }
 }
