@@ -13,9 +13,19 @@ namespace ConsoleBot
 {
     public class BotController
     {
-        public static IUserDatabase UserDatabase { get; set; } = new UserDatabase();
+        public static IUserDatabase UserDatabase { get; set; }
         public static GifController GifController { get; set; }
         public static TelegramBotClient Client { get; set; }
+        
+        static BotController()
+        {
+            UserDatabase = new UserDatabase();
+            var uri = new Uri("http://localhost:9200");
+            var setting = new ConnectionSettings(uri).DefaultMappingFor<Gif>(s => s.IndexName("gifs")).EnableDebugMode();
+            var client = new ElasticClient(setting);
+            IDatabase<Gif> database = new ElasticGifDatabase(client,"gifs");
+            GifController = new GifController(database);
+        }
         
 
         public static async Task UpdateHandler(ITelegramBotClient botClient, Update update,

@@ -31,7 +31,8 @@ namespace ConsoleBot
         public IEnumerable<Gif> Search(string data)
         {
             string[] parsedData = ParseData(data);
-            return _database.MatchAll(parsedData);
+            var  a =_database.MatchAll(parsedData);
+            return a;
         }
 
         public string[] ParseData(string data)
@@ -47,7 +48,7 @@ namespace ConsoleBot
             for (int i = 0; i < parsedData.Count; i++)
             {
                 result.Add(parsedData[i]);
-                if (i != parsedData.Count)
+                if (i != parsedData.Count - 1)
                 {
                     result.Add(parsedData[i] + parsedData[i + 1]);
                 }

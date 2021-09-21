@@ -99,7 +99,12 @@ namespace ConsoleBot
 
         private ISearchResponse<Gif> Search(QueryBase query)
         {
-            return _client.Search<Gif>(sc => sc.Index(_indexName).Size(10).Query(_ => query));
+            var searchRequest = new SearchRequest()
+            {
+                Query = query
+            };
+            
+            return _client.Search<Gif>(searchRequest);
         }
 
         private QueryBase CreateQuery(string[] allData)
@@ -117,12 +122,12 @@ namespace ConsoleBot
             {
                 var matchQuery = new MatchQuery()
                 {
-                    Field = "Data",
+                    Field = "data",
+                    Query = data,
                     Fuzziness = Fuzziness.Ratio(GetRatio(data)),
                 };
                 allQueries.Add(matchQuery);
             }
-
             return allQueries;
         }
 
@@ -139,7 +144,5 @@ namespace ConsoleBot
             }
             return 2;
         }
-
-        
     }
 }
