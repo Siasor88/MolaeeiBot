@@ -31,6 +31,10 @@ namespace ConsoleBot
         public static async Task UpdateHandler(ITelegramBotClient botClient, Update update,
             CancellationToken cancellationToken)
         {
+            if (update.Type == UpdateType.ChannelPost)
+            {
+                HandleChannel(update);
+            }
             if (update.Type == UpdateType.Message)
             {
                 HandleMessages(update);
@@ -41,6 +45,17 @@ namespace ConsoleBot
             }
         }
 
+        private static void HandleChannel(Update update)
+        {
+            Message message = update.ChannelPost;
+            if (message.Animation != null && !string.IsNullOrEmpty(message.Caption))
+            {
+                Console.WriteLine("adding gif" + message.Caption.Replace("#" , " "));
+                Gif gif = new Gif(message.Animation.FileUniqueId, message.Animation.FileId, 0,message.Caption.Replace("#" , " "));
+                GifController.Add(gif);
+            }
+        }
+        
         private static void HandleMessages(Update update)
         {
             Message message = update.Message;
