@@ -1,2 +1,2 @@
 # MolaeeiBot
- Yek Bot Molaeei
+ A simple Telegram Bot for finding and searchin gifs
